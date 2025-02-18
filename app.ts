@@ -2,13 +2,15 @@ import dotenv from 'dotenv';
 import express from 'express';
 const models = require('./models/models');
 import {sequelize} from './data/database';
+import userRouter from './routes/userRouter'
 
 dotenv.config();
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 5000
 const app = express();
 
-console.log(process.env.DB_HOST, process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS);
+app.use(express.json())
+app.use('/api/user', userRouter)
 
 const start = async() => {
     try {

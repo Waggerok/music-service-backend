@@ -1,19 +1,42 @@
-// import { Request, Response } from "express";
-// import { where } from "sequelize";
-// import model from "../models/models";
+import { Request, Response } from "express";
+import model from "../models/models";
 
-// class UserController {
-//     async getUsers(req : Request,res : Response) {
-//         try {
-//             const users = await model.User.findAll()
+interface ICreateUser {
+    login : string
+    password : string
+    role ?: string
+}
 
-//             if (users.length > 0) {
-//                 res.status(200).json({users})
-//             } else {
-//                 res.status(404).json({ message : 'Пользователи не найдены' })
-//             }
-//         } catch(error) {
-//             console.error()
-//         }
-//     }
-// }
+class UserController{
+    async getUsers(req : Request,res : Response) {
+        try {
+            const users = await model.User.findAll()
+
+            if (users.length > 0) {
+                res.status(200).json({users})
+            } else {
+                res.status(404).json({ message : 'Пользователи не найдены' })
+            }
+        } catch(error) {
+            console.error('Error during getting all users', error);
+            res.status(500).json({ message : 'Произошла ошибка на сервере' })
+        }
+    }
+    async createUser(req : Request<{}, {}, ICreateUser>, res : Response) {
+        try {
+            const {login, password, role} = req.body;
+
+            if (!login || !password) {
+                return res.status(400).json({ message : 'Не все данные введены' })
+            }
+
+            const newUser = await model.User.create({ login, password, role })
+            return res.status(201).json(newUser)
+        } catch (error) {
+            console.error('Error during creating user', error);
+            res.status(500).json({ message : 'Произошла ошибка при создании пользователя' })
+        }
+    }
+}
+
+export default new UserController();
