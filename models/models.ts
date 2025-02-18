@@ -16,3 +16,4 @@ const Music = sequelize.define('music', {
     audio : {type : DataTypes.STRING}
 })
 
+export default {User, Music} 
