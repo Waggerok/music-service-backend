@@ -37,6 +37,23 @@ class UserController{
             res.status(500).json({ message : 'Произошла ошибка при создании пользователя' })
         }
     }
+    async deleteUser(req : Request, res : Response) {
+        try {
+            const {login} = req.params;
+
+            const user = await model.User.findOne({ where : { login } })
+            if (!user) {
+                return res.status(404).json({ message : 'Пользователь не найден или не существует' })
+            }
+
+            await user.destroy();
+
+            return res.status(200).json({ message : 'Пользователь успешно удален из базы данных'})
+        } catch (error) {
+            console.error('Error during deleting user', error);
+            res.status(500).json({ message : 'Ошибка при удалении пользователя' })
+        }
+    }
 }
 
 export default new UserController();
