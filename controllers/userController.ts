@@ -1,11 +1,7 @@
 import { Request, Response } from "express";
 import model from "../models/models";
+import ICreateUser from '../Interfaces/Interfaces';
 
-interface ICreateUser {
-    login : string
-    password : string
-    role ?: string
-}
 
 class UserController{
     async getUsers(req : Request,res : Response) {
@@ -22,7 +18,7 @@ class UserController{
             res.status(500).json({ message : 'Произошла ошибка на сервере' })
         }
     }
-    async createUser(req : Request<{}, {}, ICreateUser>, res : Response) {
+    async createUser(req : Request<ICreateUser>, res : Response) {
         try {
             const {login, password, role} = req.body;
 

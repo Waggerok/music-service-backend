@@ -3,6 +3,7 @@ import express from 'express';
 const models = require('./models/models');
 import {sequelize} from './data/database';
 import userRouter from './routes/userRouter';
+import musicRouter from './routes/musicRouter';
 import cors from 'cors'
 
 dotenv.config();
@@ -13,7 +14,8 @@ const app = express();
 app.use(cors())
 
 app.use(express.json())
-app.use('/api/user', userRouter)
+app.use('/api/user', userRouter);
+app.use('/api/music', musicRouter)
 
 const start = async() => {
     try {
