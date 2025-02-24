@@ -2,18 +2,31 @@ import { Response, Request } from "express";
 import model from "../models/models";
 import IMusic from "../Interfaces/Interfaces";
 
-
+interface IMilterFiles {
+    image?: Express.Multer.File[];
+    audio?: Express.Multer.File[];
+}
 
 class musicController {
-    async addMusic(req : Request<IMusic>, res : Response) {
+    async addMusic(req: Request<{}, {}, IMusic>, res: Response) {
         try {
-            const {title , author , image , audio} = req.body
+            const {title , author } = req.body;
+            const files = req.files as IMilterFiles;
+            const image = files.image?.[0]?.filename;
+            const audio = files.audio?.[0]?.filename;
+
 
             if (!title || !author || !image || !audio) {
                 return res.status(400).json({ message : 'Не все данные введены' })
             }
 
-            const newMusic = await model.Music.create({title, author, image, audio});
+            const newMusic = await model.Music.create({
+                title,
+                author,
+                image : `/uploads/image/${image}`,
+                audio : `/uploads/audio/${audio}`
+            });
+
             return res.status(201).json(newMusic);
         } catch (error){
             console.error('Error during creating music', error);
@@ -22,7 +35,7 @@ class musicController {
     }
     async getMusic(req : Request, res : Response) {
         try {
-            const music= await model.Music.findAll()
+            const music = await model.Music.findAll()
 
             if (music.length > 0) {
                 res.status(200).json({music})

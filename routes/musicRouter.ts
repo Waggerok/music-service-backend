@@ -1,11 +1,12 @@
 import { Request, Response, Router } from "express";
 import musicController from "../controllers/musicController";
 import IMusic from "../Interfaces/Interfaces";
+import upload from "../middleware/uploads";
 
 const router = Router();
 
-router.post('/addMusic', async(req : Request<IMusic> , res : Response) => {
-    musicController.addMusic(req,res)
+router.post("/addMusic", upload.fields([{ name: "image" }, { name: "audio" }]), (req, res) => {
+    musicController.addMusic(req as Request, res as Response);
 });
 
 router.get('/getMusic', async(req : Request ,res : Response) => {
